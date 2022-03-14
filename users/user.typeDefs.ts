@@ -12,8 +12,7 @@ export default gql`
   }
 
   type Query {
-    user: [User]
-    seeProfile: User
+    seeProfile(username: String!): User
   }
 
   type Mutation {

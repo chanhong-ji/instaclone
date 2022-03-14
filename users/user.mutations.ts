@@ -32,7 +32,7 @@ export default {
           data: { firstName, lastName, username, email, password: hashed },
         });
       } catch (error) {
-        console.log(error);
+        console.log("Create account error", error);
         return error;
       }
     },
