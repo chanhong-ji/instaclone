@@ -28,12 +28,13 @@ export default {
         // hash password
         const hashed = await hash(password, 10);
         // save and return a user
-        return client.user.create({
+        await client.user.create({
           data: { firstName, lastName, username, email, password: hashed },
         });
+        return { ok: true };
       } catch (error) {
         console.log("Create account error", error);
-        return error;
+        return { ok: false, error };
       }
     },
   },
