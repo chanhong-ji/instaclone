@@ -8,14 +8,21 @@ export default gql`
     username: String!
     email: String!
     createdAt: String!
-    updatedAt: String!
+    updatedAt: String
   }
 
   type Query {
+    user: [User]
     seeProfile: User
   }
 
   type Mutation {
-    createAccount: Boolean
+    createAccount(
+      firstName: String!
+      lastName: String!
+      username: String!
+      email: String!
+      password: String!
+    ): User
   }
 `;
