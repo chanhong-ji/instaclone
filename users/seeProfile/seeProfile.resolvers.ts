@@ -1,12 +1,13 @@
 import client from "../../client";
+import { QueryResolvers } from "../../types";
 
-interface ISeeProfile {
+interface IUserInfo {
   username: string;
 }
 
 export default {
   Query: {
-    seeProfile: (_: any, { username }: ISeeProfile) =>
+    seeProfile: (_: any, { username }: IUserInfo) =>
       client.user.findUnique({ where: { username } }),
   },
 };

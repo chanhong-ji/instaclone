@@ -1,19 +1,18 @@
 import { hash } from "bcrypt";
 import client from "../../client";
-
-interface ICreate {
-  firstName: string;
-  lastName: string;
-  username: string;
-  email: string;
-  password: string;
-}
+import { MutationCreateAccountArgs } from "../../types";
 
 export default {
   Mutation: {
     createAccount: async (
       _: any,
-      { firstName, lastName, username, email, password }: ICreate
+      {
+        firstName,
+        lastName,
+        username,
+        email,
+        password,
+      }: MutationCreateAccountArgs
     ) => {
       try {
         //   check if username or email are already on DB

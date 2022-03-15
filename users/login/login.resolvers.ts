@@ -1,15 +1,11 @@
 import { compare } from "bcrypt";
 import jwt from "jsonwebtoken";
 import client from "../../client";
-
-interface ILogin {
-  username: string;
-  password: string;
-}
+import { MutationLoginArgs } from "../../types";
 
 export default {
   Mutation: {
-    login: async (_: any, { username, password }: ILogin) => {
+    login: async (_: any, { username, password }: MutationLoginArgs) => {
       // find user with username
       const user = await client.user.findFirst({ where: { username } });
       if (!user) {
@@ -27,7 +23,7 @@ export default {
         };
       }
       // issue token
-      const token = jwt.sign({ id: user.id }, process.env.PRIVATE_KEY ?? "", {
+      const token = jwt.sign({ id: user.id }, process.env.PRIVATE_KEY, {
         expiresIn: "14d",
       });
       return {

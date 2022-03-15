@@ -5,11 +5,15 @@
   "scripts": {
     "dev": "nodemon --exec ts-node server.ts",
     "migrate": "npx prisma migrate dev",
-    "studio": "npx prisma studio"
+    "studio": "npx prisma studio",
+    "generate": "graphql-codegen"
   },
   "author": "",
   "license": "ISC",
   "dependencies": {
+    "@graphql-codegen/cli": "^2.6.2",
+    "@graphql-codegen/typescript": "^2.4.7",
+    "@graphql-codegen/typescript-resolvers": "^2.5.4",
     "@graphql-tools/load-files": "^6.5.3",
     "@graphql-tools/merge": "^8.2.3",
     "@graphql-tools/schema": "^8.3.2",
