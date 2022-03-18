@@ -1,26 +1,15 @@
-import { User } from "@prisma/client";
 import { hash } from "bcrypt";
-import client from "../../client";
-import { MutationEditProfileArgs } from "../../types";
+import { Resolvers } from "../../types";
 import { protectedResolver } from "../user.utils";
+import client from "../../client";
 
-interface IContext {
-  loggedInUser: User | null;
-}
-
-export default {
+const resolvers: Resolvers = {
   Mutation: {
     editProfile: protectedResolver(
       async (
         _: any,
-        {
-          firstName,
-          lastName,
-          username,
-          email,
-          password: newPassword,
-        }: MutationEditProfileArgs,
-        { loggedInUser }: IContext
+        { firstName, lastName, username, email, password: newPassword },
+        { loggedInUser }
       ) => {
         // check user authenthcation
         if (!loggedInUser) {
@@ -54,3 +43,5 @@ export default {
     ),
   },
 };
+
+export default resolvers;

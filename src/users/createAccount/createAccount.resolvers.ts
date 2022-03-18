@@ -1,18 +1,12 @@
 import { hash } from "bcrypt";
 import client from "../../client";
-import { MutationCreateAccountArgs } from "../../types";
+import { Resolvers } from "../../types";
 
-export default {
+const resolvers: Resolvers = {
   Mutation: {
     createAccount: async (
-      _: any,
-      {
-        firstName,
-        lastName,
-        username,
-        email,
-        password,
-      }: MutationCreateAccountArgs
+      _,
+      { firstName, lastName, username, email, password }
     ) => {
       try {
         //   check if username or email are already on DB
@@ -33,8 +27,10 @@ export default {
         return { ok: true };
       } catch (error) {
         console.log("Create account error", error);
-        return { ok: false, error };
+        return { ok: false, error: error };
       }
     },
   },
 };
+
+export default resolvers;

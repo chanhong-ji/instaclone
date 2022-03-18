@@ -1,9 +1,0 @@
-schema: http://localhost:5001/graphql
-generates:
-  types.ts:
-    plugins:
-      - "@graphql-codegen/typescript"
-      - "@graphql-codegen/typescript-resolvers"
-    config:
-      inputMaybeValue: T | undefined
-      maybeValue: T | undefined

@@ -1,6 +1,7 @@
 import jwt from "jsonwebtoken";
 import { JwtPayload } from "jsonwebtoken";
 import client from "../client";
+import { Resolver } from "../types";
 
 interface payload extends JwtPayload {
   id: number;
@@ -23,7 +24,7 @@ export const getUser = async (token: string) => {
 };
 
 export const protectedResolver =
-  (resolver: any) => (parent: any, args: any, context: any, info: any) => {
+  (resolver: Resolver) => (parent: any, args: any, context: any, info: any) => {
     if (!context.loggedInUser) {
       return { ok: false, error: "no user" };
     } else {
