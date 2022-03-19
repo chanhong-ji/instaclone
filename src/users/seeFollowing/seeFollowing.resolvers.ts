@@ -21,7 +21,6 @@ const resolvers: Resolvers = {
           skip: lastId ? 1 : 0,
           ...(lastId && { cursor: { id: lastId } }),
         });
-      console.log(following);
 
       return { ok: true, following };
     },
