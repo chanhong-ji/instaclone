@@ -26,7 +26,7 @@ export const getUser = async (token: string) => {
 export const protectedResolver =
   (resolver: Resolver) => (parent: any, args: any, context: any, info: any) => {
     if (!context.loggedInUser) {
-      return { ok: false, error: "no user" };
+      return { ok: false, error: "No user for protected resolver" };
     } else {
       return resolver(parent, args, context, info);
     }
