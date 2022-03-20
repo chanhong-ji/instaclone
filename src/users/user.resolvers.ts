@@ -3,6 +3,7 @@ import { Resolvers } from "../types";
 
 const resolvers: Resolvers = {
   User: {
+    photos: ({ id }) => client.user.findUnique({ where: { id } }).photos(),
     totalFollowing: ({ id }) =>
       client.user.count({
         where: { followers: { some: { id } } },
