@@ -50,7 +50,7 @@ model Like {
   id        Int      @id @default(autoincrement())
   photo     Photo    @relation(fields: [photoId], references: [id], onDelete: Cascade)
   user      User     @relation(fields: [userId], references: [id])
-  comment   Comment? @relation(fields: [commentId], references: [id])
+  comment   Comment? @relation(fields: [commentId], references: [id], onDelete: Cascade)
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
   userId    Int
