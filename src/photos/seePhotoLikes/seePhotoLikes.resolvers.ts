@@ -3,13 +3,13 @@ import { Resolvers } from "../../types";
 
 const resolvers: Resolvers = {
   Query: {
-    seePhotoLikes: async (_, { photoId }) => {
-      const likes = await client.like.findMany({
-        where: { photoId },
-        select: { user: true },
-      });
-      return likes.map((like) => like.user);
-    },
+    seePhotoLikes: (_, { photoId, lastId }) =>
+      client.user.findMany({
+        take: 20,
+        skip: lastId ? 1 : 0,
+        ...(lastId && { cursor: { id: lastId } }),
+        where: { likes: { some: { photoId } } },
+      }),
   },
 };
 
