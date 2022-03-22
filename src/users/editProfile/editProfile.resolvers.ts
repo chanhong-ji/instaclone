@@ -2,7 +2,7 @@ import { hash } from "bcrypt";
 import { Resolvers } from "../../types";
 import { protectedResolver } from "../user.utils";
 import client from "../../client";
-import { createWriteStream } from "fs";
+import { deleteFromS3, uploadToS3 } from "../../shared/shared.utils";
 
 const resolvers: Resolvers = {
   Mutation: {
@@ -28,14 +28,12 @@ const resolvers: Resolvers = {
         // if avatar, add image file
         let avatarUrl = null;
         if (avatar) {
-          const { filename, createReadStream } = await avatar;
-          const newFilename = `${loggedInUser.id}-${Date.now()}-${filename}`;
-          const readStream = createReadStream();
-          const writeStream = createWriteStream(
-            process.cwd() + "/uploads/" + newFilename
-          );
-          readStream.pipe(writeStream);
-          avatarUrl = `http://localhost:6001/static/${newFilename}`;
+          const user = await client.user.findUnique({
+            where: { id: loggedInUser.id },
+            select: { avatar: true },
+          });
+          if (user?.avatar) await deleteFromS3(user.avatar);
+          avatarUrl = await uploadToS3(avatar, loggedInUser.id, "avatars");
         }
 
         // check if there is password input
@@ -43,6 +41,7 @@ const resolvers: Resolvers = {
         if (newPassword) {
           updatedPassword = await hash(newPassword, 10);
         }
+
         // update user
         const updatedUser = await client.user.update({
           where: {
@@ -58,7 +57,6 @@ const resolvers: Resolvers = {
             ...(avatarUrl && { avatar: avatarUrl }),
           },
         });
-        console.log(updatedUser);
 
         if (updatedUser.id) {
           return { ok: true };

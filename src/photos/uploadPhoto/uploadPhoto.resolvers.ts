@@ -1,5 +1,5 @@
-import { createWriteStream } from "fs";
 import client from "../../client";
+import { uploadToS3 } from "../../shared/shared.utils";
 import { Resolvers } from "../../types";
 import { protectedResolver } from "../../users/user.utils";
 import { hashtagProcess } from "../photos.utils";
@@ -7,27 +7,20 @@ import { hashtagProcess } from "../photos.utils";
 const resolvers: Resolvers = {
   Mutation: {
     uploadPhoto: protectedResolver(
-      async (_, { file, caption }, { loggedInUser }) => {
+      async (_, { file, caption }, { loggedInUser: { id: userId } }) => {
         // Create photo file
-        const { filename, createReadStream } = await file;
-        const newFilename = `${loggedInUser.id}-${Date.now()}-${filename}`;
-        const readStream = createReadStream();
-        const writeStream = createWriteStream(
-          process.cwd() + "/uploads/" + newFilename
-        );
-        readStream.pipe(writeStream);
-        const fileUrl = `http://localhost:6001/static/${newFilename}`;
+        const fileUrl = await uploadToS3(file, userId, "photos");
 
         // Create photo model
-        await client.photo.create({
+        const photo = await client.photo.create({
           data: {
             file: fileUrl,
             caption,
-            user: { connect: { id: loggedInUser.id } },
+            user: { connect: { id: userId } },
             hashtags: { connectOrCreate: hashtagProcess(caption) },
           },
         });
-        return { ok: true };
+        return photo;
       }
     ),
   },
