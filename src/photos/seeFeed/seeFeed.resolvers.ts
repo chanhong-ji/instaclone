@@ -5,8 +5,11 @@ import { protectedResolver } from "../../users/user.utils";
 const resolvers: Resolvers = {
   Query: {
     seeFeed: protectedResolver(
-      async (_, __, { loggedInUser: { id: userId } }) =>
+      async (_, { lastId }, { loggedInUser: { id: userId } }) =>
         client.photo.findMany({
+          take: 10,
+          skip: lastId ? 1 : 0,
+          ...(lastId && { cursor: { id: lastId } }),
           where: {
             OR: [
               {
