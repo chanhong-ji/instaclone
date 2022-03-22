@@ -5,7 +5,7 @@ import { protectedResolver } from "../../users/user.utils";
 const resolvers: Resolvers = {
   Mutation: {
     createComment: protectedResolver(
-      async (_, { photoId, payload }, { loggedInUser: { id: usreId } }) => {
+      async (_, { photoId, payload }, { loggedInUser: { id: userId } }) => {
         // Check photo exist
         const ok = client.photo.findUnique({
           where: { id: photoId },
@@ -16,7 +16,7 @@ const resolvers: Resolvers = {
         // Create a comment
         await client.comment.create({
           data: {
-            user: { connect: { id: usreId } },
+            user: { connect: { id: userId } },
             photo: { connect: { id: photoId } },
             payload,
           },

@@ -1,7 +1,7 @@
 import client from "../../client";
 import { Resolvers } from "../../types";
 
-const COMMENT_PAGE = 10;
+const COMMENT_PAGE = 20;
 
 const resolvers: Resolvers = {
   Query: {
