@@ -17,7 +17,7 @@ async function startServer() {
   const httpServer = createServer(app);
   const apolloServer = new ApolloServer({
     schema,
-    context: async ({ req }: any) => {
+    context: async ({ req }) => {
       const { token } = req.headers;
       if (!token || typeof token !== "string") return null;
       return { loggedInUser: await getUser(token) };
@@ -40,8 +40,10 @@ async function startServer() {
       schema,
       execute,
       subscribe,
-      onConnect: () => {
-        // lookup userId by token, etc.
+      // context for subscription server
+      onConnect: async ({ token }: any) => {
+        const loggedInUser = await getUser(token);
+        return { loggedInUser };
       },
     },
     {

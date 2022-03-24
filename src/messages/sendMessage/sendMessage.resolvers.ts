@@ -1,4 +1,6 @@
 import client from "../../client";
+import { SEND_MESSAGE } from "../../constant";
+import pubsub from "../../pubsub";
 import { Resolvers } from "../../types";
 import { protectedResolver } from "../../users/user.utils";
 
@@ -29,28 +31,36 @@ const resolvers: Resolvers = {
               },
             ],
           },
+          select: { id: true },
         });
 
+        let message = null;
         // if room exists, only add message
         if (room) {
-          await client.message.create({
+          message = await client.message.create({
             data: {
               payload,
               room: { connect: { id: room.id } },
               user: { connect: { id: fromUserId } },
             },
           });
-          //   if room doesn't exist, create new room
+          //   if room doesn't exist, send message with create room
         } else {
-          await client.room.create({
+          message = await client.message.create({
             data: {
-              users: { connect: [{ id: fromUserId }, { id: toUserId }] },
-              messages: {
-                create: [{ payload, user: { connect: { id: fromUserId } } }],
+              payload,
+              room: {
+                create: {
+                  users: { connect: [{ id: fromUserId }, { id: toUserId }] },
+                },
               },
+              user: { connect: { id: fromUserId } },
             },
           });
         }
+        // message subsciptions
+        pubsub.publish(SEND_MESSAGE, { roomUpdates: { message } });
+
         return { ok: true };
       }
     ),
